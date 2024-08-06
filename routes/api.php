@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SMSController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,14 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::namespace('API')->name('api.')->group(function () {
+    Route::middleware('api')->group(function () {
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+    });
+
+    Route::post('/sms', [SMSController::class, 'store']);
+    Route::post('/sms/id', [SMSController::class, 'send']);
+    Route::post('/sms/envia', [SMSController::class, 'storeAndSend']);
 });
 
-Route::post('/login', function(Request $request){
+Route::post('/login', function (Request $request) {
     $credentials = $request->only(['email', 'password']);
 
-    if(!$token = auth()->attempt($credentials)){
+    if (!$token = auth()->attempt($credentials)) {
         abort(401, 'Não autorizado');
     }
 
