@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SMSController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,9 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::post('/sms', [SMSController::class, 'store']);
     Route::post('/sms/id', [SMSController::class, 'send']);
     Route::post('/sms/envia', [SMSController::class, 'storeAndSend']);
+
+    Route::get('/2fa/setup', [TwoFactorController::class, 'generateSecret'])->name('2fa.setup');
+    Route::post('/2fa/verify', [TwoFactorController::class, 'verifyCode'])->name('2fa.verify');
 });
 
 Route::post('/login', function (Request $request) {
