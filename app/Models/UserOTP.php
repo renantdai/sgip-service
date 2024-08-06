@@ -7,5 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserOTP extends Model
 {
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'user_otp';
+
     use HasFactory;
 }

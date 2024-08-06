@@ -20,10 +20,10 @@ class CreateDTOSMS {
     public static function makeFromRequest($request): self {
         return new self(
             $request->id ?? 0,
-            $request->country_code,
+            $request->country_code ?? 55,
             $request->number,
             $request->content,
-            $request->type,
+            $request->type ?? 0,
             $request->orige,
             SMSStatus::C
         );

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_o_t_p_s', function (Blueprint $table) {
+        Schema::create('user_otp', function (Blueprint $table) {
             $table->id();
             $table->string('number')->nullable();
             $table->string('google_secret')->nullable();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_o_t_p_s');
+        Schema::dropIfExists('user_otp');
     }
 };

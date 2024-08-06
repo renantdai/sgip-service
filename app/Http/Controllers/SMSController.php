@@ -63,9 +63,7 @@ class SMSController extends Controller {
         try {
             $dto = CreateDTOSMS::makeFromRequest($request);
 
-            $sms = $this->service->new($dto);
-
-            return $this->service->send($sms->id);
+            return $this->service->storeAndSend($dto);
         } catch (Exception $e) {
             return response()->json([
                 'error' => true,
@@ -78,8 +76,24 @@ class SMSController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(string $id) {
-        //
+    public function sendToken(Request $request) {
+        if (!$request->orige || !$request->number) {
+            return response()->json([
+                'error' => true,
+                'msg' => 'Parametros vazio'
+            ], Response::HTTP_OK);
+        }
+
+        try {
+
+            return $this->service->sendToken($request);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => true,
+                'msg' => 'Houve um erro ao gerar e enviar o token',
+                'warning' => $e->getMessage()
+            ], Response::HTTP_OK);
+        }
     }
 
     /**

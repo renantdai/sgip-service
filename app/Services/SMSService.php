@@ -5,9 +5,11 @@ namespace App\Services;
 use App\DTO\CreateDTOSMS;
 use App\DTO\UpdateSMSDTO;
 use App\Enums\SMSStatus;
+use App\Http\Controllers\TwoFactorController;
 use App\Http\Requests\StoreSMSRequest;
 use App\Models\SMS;
 use App\Repositories\SMSRepositoryInterface;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use stdClass;
 
@@ -70,5 +72,23 @@ class SMSService {
         }
 
         return $response; //criar validação de erro
+    }
+
+    public function storeAndSend(CreateDTOSMS $dto) {
+        $sms = $this->new($dto);
+
+        return $this->send($sms->id);
+    }
+
+    public function sendToken(Request $request) {
+        $twoFA = new TwoFactorController();
+        $secret = $twoFA->generateSecret($request);
+        if ($secret['error']) {
+            return $secret;
+        }
+        $request['content'] = "Seu codigo {$secret['oneCode']} de autenticacao no sistema SGIP";
+        $dto = CreateDTOSMS::makeFromRequest($request);
+
+        return $this->storeAndSend($dto);
     }
 }

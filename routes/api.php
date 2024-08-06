@@ -29,6 +29,8 @@ Route::namespace('API')->name('api.')->group(function () {
 
     Route::get('/2fa/setup', [TwoFactorController::class, 'generateSecret'])->name('2fa.setup');
     Route::post('/2fa/verify', [TwoFactorController::class, 'verifyCode'])->name('2fa.verify');
+
+    Route::post('/sms/token/enviar', [SMSController::class, 'sendToken']);
 });
 
 Route::post('/login', function (Request $request) {

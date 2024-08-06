@@ -12,7 +12,10 @@ class TwoFactorController extends Controller {
         $ga = new PHPGangsta_GoogleAuthenticator();
         $secret = $ga->createSecret();
 
-        $userOTP = new UserOTP();
+        $userOTP = UserOTP::where('number', '=', $request->number)->first();
+        if (!$userOTP) {
+            $userOTP = new UserOTP();
+        }
         $userOTP->google_secret = $secret;
         $userOTP->number = $request->number;
         $userOTP->save();
@@ -22,6 +25,7 @@ class TwoFactorController extends Controller {
         $oneCode = $ga->getCode($secret);
 
         return [
+            'error' => false,
             'secret' => $secret,
             'oneCode' => $oneCode,
             'url' => $qrCodeUrl
@@ -32,12 +36,24 @@ class TwoFactorController extends Controller {
         $ga = new PHPGangsta_GoogleAuthenticator();
         $userOTP = UserOTP::where('number', '=', $request->number)->first();
 
-        if ($ga->verifyCode($userOTP->google_secret, $request->code, 2)) {
-            // Código válido, permitir acesso
-            return redirect()->intended('dashboard');
+        if (!$userOTP) {
+            return [
+                'error' => true,
+                'msg' => 'Numero não encontrado'
+            ];
+        }
+
+        if ($ga->verifyCode($userOTP->google_secret, $request->code, 10)) { // 10x30s = 5minutos
+            return [
+                'error' => false,
+                'verifyCode' => true
+            ];
         } else {
-            // Código inválido
-            return back()->withErrors(['code' => 'Código inválido']);
+            return [
+                'error' => true,
+                'verifyCode' => false,
+                'msg' => 'O código informado ou é inválido ou expirou'
+            ];
         }
     }
 }
