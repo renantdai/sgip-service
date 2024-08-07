@@ -40,8 +40,8 @@ class SMSService {
     }
 
     public function sendServiceSMS(CreateDTOSMS $dto) {
-        $mock = json_decode('{"success":true,"responseCode":"000","responseDescription":"Success queued","credit":1,"balance":"7","id":"6"}', true);
-        return $this->parseResponse($dto, $mock);
+/*         $mock = json_decode('{"success":true,"responseCode":"000","responseDescription":"Success queued","credit":1,"balance":"7","id":"6"}', true);
+        return $this->parseResponse($dto, $mock); */
 
         $response = Http::withBasicAuth('renantdai', 'Renankonrath22')
             ->get('https://api.smsmarket.com.br/webservice-rest/send-single', [
