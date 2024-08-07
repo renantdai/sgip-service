@@ -12,7 +12,7 @@ class TwoFactorController extends Controller {
         $ga = new PHPGangsta_GoogleAuthenticator();
         $secret = $ga->createSecret();
 
-        $userOTP = UserOTP::where('number', '=', $request->number)->first();
+        $userOTP = UserOTP::where('number', '=', $request->number)->orderBy('id', 'DESC')->first();
         if (!$userOTP) {
             $userOTP = new UserOTP();
         }
@@ -34,7 +34,7 @@ class TwoFactorController extends Controller {
 
     public function verifyCode(Request $request) {
         $ga = new PHPGangsta_GoogleAuthenticator();
-        $userOTP = UserOTP::where('number', '=', $request->number)->first();
+        $userOTP = UserOTP::where('number', '=', $request->number)->orderBy('id', 'DESC')->first();
 
         if (!$userOTP) {
             return [
@@ -43,7 +43,7 @@ class TwoFactorController extends Controller {
             ];
         }
 
-        if ($ga->verifyCode($userOTP->google_secret, $request->code, 20)) { // 10x30s = 5minutos
+        if ($ga->verifyCode($userOTP->google_secret, $request->code, 40)) { // 10x30s = 5minutos
             return [
                 'error' => false,
                 'verifyCode' => true
