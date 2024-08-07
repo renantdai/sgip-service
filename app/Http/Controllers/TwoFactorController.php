@@ -43,7 +43,7 @@ class TwoFactorController extends Controller {
             ];
         }
 
-        if ($ga->verifyCode($userOTP->google_secret, $request->code, 10)) { // 10x30s = 5minutos
+        if ($ga->verifyCode($userOTP->google_secret, $request->code, 20)) { // 10x30s = 5minutos
             return [
                 'error' => false,
                 'verifyCode' => true
